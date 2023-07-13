@@ -1,9 +1,11 @@
-import { Button } from "./components/ui/button";
+import Navbar from "./components/Navbar";
+import Orders from "./components/Orders";
 
 function App() {
   return (
     <div>
-     <Button>Hello</Button>
+      <Navbar />
+      <Orders />
     </div>
   );
 }
