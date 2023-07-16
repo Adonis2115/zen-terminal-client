@@ -1,4 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -31,10 +33,12 @@ const FormSchema = z.object({
   action: z.string({
     required_error: "Please select candle stick action.",
   }),
+  // type: z.enum(["CE", "PE"]),
+  // direction: z.enum(["buy", "sell"]),
   strike: z.coerce.number({
     required_error: "Please enter a strike price.",
   }),
-  expiry: z.coerce.date({
+  expiry: z.string({
     required_error: "Please select expiry date.",
   }),
 });
@@ -45,9 +49,9 @@ enum Index {
 }
 const indexs = [Index.BANKNIFTY, Index.NIFTY, Index.FINNIFTY];
 export default function Orders() {
-  const [expiries] = useState(["2023-06-20", "2023-06-24", "2023-06-30"]);
+  const [expiries] = useState(["2023-07-20", "2023-07-27", "2023-08-03"]);
   const [lots, setLots] = useState(1);
-  const [type, setType] = useState<"CE" | "PE">("CE");
+  const [type, setType] = useState<"PUT" | "CALL">("CALL");
   const [direction, setDirection] = useState<"buy" | "sell">("buy");
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -56,8 +60,23 @@ export default function Orders() {
       strike: 0,
     },
   });
+  const mutation = useMutation((newOrder: object) => {
+    return axios.post(
+      `${import.meta.env.VITE_API_BASE_URL}/trade/neworder`,
+      newOrder
+    );
+  });
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
+    mutation.mutate({
+      indexSymbol: data.index,
+      triggerLevel: data.trigger,
+      candleAction: data.action,
+      optionType: type,
+      tradeType: direction,
+      strikePrie: data.strike,
+      expiryDate: data.expiry,
+      lot: lots,
+    });
   }
 
   return (
@@ -133,17 +152,21 @@ export default function Orders() {
             <div className="flex gap-2">
               <Button
                 type="button"
-                variant={`${type === "CE" ? "default" : "outline"}`}
+                variant={`${type === "CALL" ? "default" : "outline"}`}
                 size="icon"
-                onClick={() => setType((prev) => (prev !== "CE" ? "CE" : prev))}
+                onClick={() =>
+                  setType((prev) => (prev !== "CALL" ? "CALL" : prev))
+                }
               >
                 CE
               </Button>
               <Button
                 type="button"
-                variant={`${type === "PE" ? "default" : "outline"}`}
+                variant={`${type === "PUT" ? "default" : "outline"}`}
                 size="icon"
-                onClick={() => setType((prev) => (prev !== "PE" ? "PE" : prev))}
+                onClick={() =>
+                  setType((prev) => (prev !== "PUT" ? "PUT" : prev))
+                }
               >
                 PE
               </Button>
@@ -190,7 +213,7 @@ export default function Orders() {
               <FormItem>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value as unknown as string}
+                  defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
