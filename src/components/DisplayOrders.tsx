@@ -29,7 +29,7 @@ type Order = {
   contractSecurity: string;
   status: string;
 };
-export default function Orders() {
+export default function DisplayOrders() {
   const [orserStatus, setOrserStatus] = useState<
     "pending" | "success" | "cancelled"
   >("pending");
