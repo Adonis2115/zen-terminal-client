@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogTrigger } from "@radix-ui/react-dialog";
 import { Loader2, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { Input } from "./ui/input";
@@ -81,171 +82,200 @@ export default function NewOrder() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-        <FormField
-          control={form.control}
-          name="index"
-          render={({ field }) => (
-            <FormItem>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Index" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {indexs.map((index, i) => (
-                    <SelectItem key={i} value={index}>
-                      {index}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="trigger"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input type="number" placeholder="Trigger Level" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="action"
-          render={({ field }) => (
-            <FormItem>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Action" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="crossup">Cross Up</SelectItem>
-                  <SelectItem value="crossdown">Cross Down</SelectItem>
-                  <SelectItem value="touch">Touch</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex gap-8">
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              variant={`${type === "CALL" ? "default" : "outline"}`}
-              size="icon"
-              onClick={() =>
-                setType((prev) => (prev !== "CALL" ? "CALL" : prev))
-              }
-            >
-              CE
-            </Button>
-            <Button
-              type="button"
-              variant={`${type === "PUT" ? "default" : "outline"}`}
-              size="icon"
-              onClick={() => setType((prev) => (prev !== "PUT" ? "PUT" : prev))}
-            >
-              PE
-            </Button>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              variant={`${direction === "buy" ? "default" : "outline"}`}
-              size="icon"
-              onClick={() =>
-                setDirection((prev) => (prev !== "buy" ? "buy" : prev))
-              }
-            >
-              Buy
-            </Button>
-            <Button
-              type="button"
-              variant={`${direction === "sell" ? "default" : "outline"}`}
-              size="icon"
-              onClick={() =>
-                setDirection((prev) => (prev !== "sell" ? "sell" : prev))
-              }
-            >
-              Sell
-            </Button>
-          </div>
-        </div>
-        <FormField
-          control={form.control}
-          name="strike"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input type="number" placeholder="Strike Price" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="expiry"
-          render={({ field }) => (
-            <FormItem>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Expiry Date" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {expiries.map((expiry, index) => (
-                    <SelectItem key={index} value={expiry}>
-                      {expiry}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={() => setLots((prev) => (prev > 1 ? prev - 1 : prev))}
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>New Order</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-2/3 space-y-6"
           >
-            <Minus className="h-4 w-4" />
-          </Button>
-          <span className="mr-2 ml-2">{lots}</span>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={() => setLots((prev) => prev + 1)}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-        {mutation.isLoading ? (
-          <Button disabled>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Wait..
-          </Button>
-        ) : (
-          <Button type="submit">Submit</Button>
-        )}
-      </form>
-    </Form>
+            <FormField
+              control={form.control}
+              name="index"
+              render={({ field }) => (
+                <FormItem>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Index" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {indexs.map((index, i) => (
+                        <SelectItem key={i} value={index}>
+                          {index}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="trigger"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Trigger Level"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="action"
+              render={({ field }) => (
+                <FormItem>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Action" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="crossup">Cross Up</SelectItem>
+                      <SelectItem value="crossdown">Cross Down</SelectItem>
+                      <SelectItem value="touch">Touch</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex gap-8">
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant={`${type === "CALL" ? "default" : "outline"}`}
+                  size="icon"
+                  onClick={() =>
+                    setType((prev) => (prev !== "CALL" ? "CALL" : prev))
+                  }
+                >
+                  CE
+                </Button>
+                <Button
+                  type="button"
+                  variant={`${type === "PUT" ? "default" : "outline"}`}
+                  size="icon"
+                  onClick={() =>
+                    setType((prev) => (prev !== "PUT" ? "PUT" : prev))
+                  }
+                >
+                  PE
+                </Button>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant={`${direction === "buy" ? "default" : "outline"}`}
+                  size="icon"
+                  onClick={() =>
+                    setDirection((prev) => (prev !== "buy" ? "buy" : prev))
+                  }
+                >
+                  Buy
+                </Button>
+                <Button
+                  type="button"
+                  variant={`${direction === "sell" ? "default" : "outline"}`}
+                  size="icon"
+                  onClick={() =>
+                    setDirection((prev) => (prev !== "sell" ? "sell" : prev))
+                  }
+                >
+                  Sell
+                </Button>
+              </div>
+            </div>
+            <FormField
+              control={form.control}
+              name="strike"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Strike Price"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="expiry"
+              render={({ field }) => (
+                <FormItem>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Expiry Date" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {expiries.map((expiry, index) => (
+                        <SelectItem key={index} value={expiry}>
+                          {expiry}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setLots((prev) => (prev > 1 ? prev - 1 : prev))}
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <span className="mr-2 ml-2">{lots}</span>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setLots((prev) => prev + 1)}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+            {mutation.isLoading ? (
+              <Button disabled>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Wait..
+              </Button>
+            ) : (
+              <Button type="submit">Submit</Button>
+            )}
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }
